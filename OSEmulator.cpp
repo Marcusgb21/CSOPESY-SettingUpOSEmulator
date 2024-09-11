@@ -52,7 +52,6 @@ void runCommandLine() {
             clearScreen();  
         }
         else if (command == "exit") {
-            std::cout << "Exiting... Goodbye!\n";
             break; 
         }
         else {
