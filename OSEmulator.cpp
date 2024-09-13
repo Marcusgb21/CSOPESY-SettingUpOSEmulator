@@ -1,18 +1,23 @@
 #include <iostream>
+#include <stdlib.h>
 #include <string>
 #include <cstdlib> 
 
+using namespace std;
+
 //header
 void printHeader() {
-    std::cout << "  *****   *****     *****    ******   *******   *****   *       * \n";
-    std::cout << " *       *     *   *     *   *     *  *        *     *   *     *  \n";
-    std::cout << "*        *        *       *  *     *  *        *          *   *   \n";
-    std::cout << "*         *****   *       *  ******   *******   *****      * *    \n";
-    std::cout << "*              *  *       *  *        *              *      *     \n";
-    std::cout << " *       *     *   *     *   *        *        *     *      *     \n";
-    std::cout << "  *****   *****     *****    *        *******   *****       *     \n";
-    std::cout << "Hello, Welcome to CSOPESY command line!\n";
-    std::cout << "Type 'exit' to quit, 'clear' to clear the screen.\n";
+
+    cout << "                                                              \n"
+            "    ██████╗███████╗ ██████╗ ██████╗ ███████╗███████╗██╗   ██╗ \n"
+            "   ██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝╚██╗ ██╔╝ \n"
+            "   ██║     ███████╗██║   ██║██████╔╝█████╗  ███████╗ ╚████╔╝  \n"
+            "   ██║     ╚════██║██║   ██║██╔═══╝ ██╔══╝  ╚════██║  ╚██╔╝   \n"
+            "   ╚██████╗███████║╚██████╔╝██║     ███████╗███████║   ██║    \n"
+            "    ╚═════╝╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝   ╚═╝    \n\n";
+                                                          
+    cout << "  Hello, Welcome to CSOPESY command line!\n";
+    cout << "  Type 'exit' to quit, 'clear' to clear the screen.\n";
 }
 
 // Clears the screen and reprints the header
@@ -23,30 +28,30 @@ void clearScreen() {
 
 //function for commands
 void runCommandLine() {
-    std::string command;
+    string command;
 
     //print header at the start always
     printHeader();
 
 
     while (true) {
-        std::cout << "\nEnter a command: ";
-        std::getline(std::cin, command);
+        cout << "\n  Enter a command: ";
+        getline(std::cin, command);
 
         if (command == "initialize") {
-            std::cout << "initialize command recognized. Doing something.\n";
+            cout << "  initialize command recognized. Doing something.\n";
         }
         else if (command == "screen") {
-            std::cout << "screen command recognized. Doing something.\n";
+            cout << "  screen command recognized. Doing something.\n";
         }
         else if (command == "scheduler-test") {
-            std::cout << "scheduler-test command recognized. Doing something.\n";
+            cout << "  scheduler-test command recognized. Doing something.\n";
         }
         else if (command == "scheduler-stop") {
-            std::cout << "scheduler-stop command recognized. Doing something.\n";
+            cout << "  scheduler-stop command recognized. Doing something.\n";
         }
         else if (command == "report-util") {
-            std::cout << "report-util command recognized. Doing something.\n";
+            cout << "  report-util command recognized. Doing something.\n";
         }
         else if (command == "clear") {
             clearScreen();  
@@ -55,7 +60,7 @@ void runCommandLine() {
             break; 
         }
         else {
-            std::cout << "Unknown command: " << command << "\n";
+            cout << "  Unknown command: " << command << "\n";
         }
     }
 }
