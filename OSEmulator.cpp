@@ -1,12 +1,16 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#include <cstdlib> 
+#include <cstdlib>
+#include <Windows.h>
 
 using namespace std;
 
 //header
 void printHeader() {
+
+    HANDLE console_color;
+    console_color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     cout << "                                                                                       \n"
             "    .d8888b.   .d8888b.   .d88888b.  8888888b.  8888888888 .d8888b. Y88b   d88P        \n"
@@ -17,10 +21,14 @@ void printHeader() {
             "   888    888       \"888 888     888 888        888             \"888    888          \n"
             "   Y88b  d88P Y88b  d88P Y88b. .d88P 888        888       Y88b  d88P    888            \n"
             "    \"Y8888P\"   \"Y8888P\"   \"Y88888P\"  888        8888888888 \"Y8888P\"     888    \n\n";
-                                            
-                                                          
-    cout << "\x1B[32m  Hello, Welcome to CSOPESY command line!\033[0m\t\t\n";
-    cout << "\x1B[33m  Type 'exit' to quit, 'clear' to clear the screen.\033[0m\n";
+
+    int P = 10; //color green
+    SetConsoleTextAttribute(console_color, P);
+    cout << "  Hello, Welcome to CSOPESY command line!\n";
+
+    P = 14; //color yellow
+    SetConsoleTextAttribute(console_color, P);
+    cout << "  Type 'exit' to quit, 'clear' to clear the screen.\n";
 }
 
 // Clears the screen and reprints the header
@@ -36,9 +44,14 @@ void runCommandLine() {
     //print header at the start always
     printHeader();
 
+    HANDLE console_color;
+    console_color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     while (true) {
-        cout << "\n\x1B[88m  Enter a command: \033[0m";
+
+        int P = 8; //color grey
+        SetConsoleTextAttribute(console_color, P);
+        cout << "  Enter a command: ";
         getline(std::cin, command);
 
         if (command == "initialize") {
