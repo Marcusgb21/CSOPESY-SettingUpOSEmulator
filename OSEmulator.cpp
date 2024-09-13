@@ -24,11 +24,11 @@ void printHeader() {
 
     int P = 10; //color green
     SetConsoleTextAttribute(console_color, P);
-    cout << "  Hello, Welcome to CSOPESY command line!\n";
+    cout << "  Hello, Welcome to CSOPESY commandline!\n";
 
     P = 14; //color yellow
     SetConsoleTextAttribute(console_color, P);
-    cout << "  Type 'exit' to quit, 'clear' to clear the screen.\n";
+    cout << "  Type 'exit' to quit, 'clear' to clear the screen\n";
 }
 
 // Clears the screen and reprints the header
@@ -49,10 +49,10 @@ void runCommandLine() {
 
     while (true) {
 
-        int P = 8; //color grey
+        int P = 15; //color white
         SetConsoleTextAttribute(console_color, P);
-        cout << "  Enter a command: ";
-        getline(std::cin, command);
+        cout << "\n  Enter a command: ";
+        getline(cin, command);
 
         if (command == "initialize") {
             cout << "  initialize command recognized. Doing something.\n";
@@ -70,10 +70,12 @@ void runCommandLine() {
             cout << "  report-util command recognized. Doing something.\n";
         }
         else if (command == "clear") {
+            cout << "  clear command recognized. Doing something.\n";
             clearScreen();  
         }
         else if (command == "exit") {
-            break; 
+            cout << "  exit command recognized. Doing something.\n";
+            break;
         }
         else {
             cout << "  Unknown command: " << command << "\n";
