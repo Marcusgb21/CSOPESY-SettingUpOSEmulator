@@ -16,8 +16,8 @@ void printHeader() {
             "   ╚██████╗███████║╚██████╔╝██║     ███████╗███████║   ██║    \n"
             "    ╚═════╝╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝   ╚═╝    \n\n";
                                                           
-    cout << "  Hello, Welcome to CSOPESY command line!\n";
-    cout << "  Type 'exit' to quit, 'clear' to clear the screen.\n";
+    cout << "\x1B[32m  Hello, Welcome to CSOPESY command line!\033[0m\t\t\n";
+    cout << "\x1B[33m  Type 'exit' to quit, 'clear' to clear the screen.\033[0m\n";
 }
 
 // Clears the screen and reprints the header
@@ -35,7 +35,7 @@ void runCommandLine() {
 
 
     while (true) {
-        cout << "\n  Enter a command: ";
+        cout << "\n\x1B[88m  Enter a command: \033[0m";
         getline(std::cin, command);
 
         if (command == "initialize") {
