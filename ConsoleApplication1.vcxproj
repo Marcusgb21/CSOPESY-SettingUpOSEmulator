@@ -128,7 +128,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AConsole.cpp" />
+    <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="OSEmulator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AConsole.h" />
+    <ClInclude Include="ConsoleManager.h" />
+    <ClInclude Include="BaseScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
