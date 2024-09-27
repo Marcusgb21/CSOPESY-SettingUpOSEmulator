@@ -15,6 +15,8 @@ private:
 
     bool enabled = false;
     String creationTime;
+    bool refreshed = false;
+    bool exited = false;
 
     void initializeCreationTime();
 };

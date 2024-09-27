@@ -14,10 +14,10 @@ const String MARQUEE_CONSOLE = "MARQUEE_CONSOLE";
 const String SCHEDULING_CONSOLE = "SCHEDULING_CONSOLE";
 const String MEMORY_CONSOLE = "MEMORY_CONSOLE";
 
-class ConsoleManager() 
+class ConsoleManager
 {
 public:
-	typedef std::unordered_map<String, std::shared.ptr<AConsole>> ConsoleTable;
+	typedef std::unordered_map<String, std::shared_ptr<AConsole>> ConsoleTable;
 
 	static ConsoleManager* getInstance();
 	static void initialize();
@@ -52,4 +52,4 @@ private:
 
 	HANDLE consoleHandle;
 	bool running = true;
-}
+};

@@ -4,9 +4,11 @@
 #include <iostream>
 
 #include "MainConsole.h"
-#include "MarqueeConsole.h"
-#include "SchedulingConsole.h"
-#include "MemorySimulationConsole.h"
+//#include "MarqueeConsole.h"
+//#include "SchedulingConsole.h"
+//#include "MemorySimulationConsole.h"
+
+using namespace std;
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
 ConsoleManager* ConsoleManager::getInstance() 
@@ -111,13 +113,13 @@ ConsoleManager::ConsoleManager()
 	this->consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	const std::shared_ptr<MainConsole> mainConsole = std::make_shared<MainConsole>();
-	const std::shared_ptr<MarqueeConsole> marqueeConsole = std::make_shared<MarqueeConsole>();
-	const std::shared_ptr<SchedulingConsole> schedulingConsole = std::make_shared<SchedulingConsole>();
+	//const std::shared_ptr<MarqueeConsole> marqueeConsole = std::make_shared<MarqueeConsole>();
+	//const std::shared_ptr<SchedulingConsole> schedulingConsole = std::make_shared<SchedulingConsole>();
 
 	this->consoleTable[MAIN_CONSOLE] = mainConsole;
-	this->consoleTable[MARQUEE_CONSOLE] = marqueeConsole;
-	this->consoleTable[SCHEDULING_CONSOLE] = schedulingConsole;
-	this->consoleTable[MEMORY_CONSOLE] = memoryConsole;
+	//this->consoleTable[MARQUEE_CONSOLE] = marqueeConsole;
+	//this->consoleTable[SCHEDULING_CONSOLE] = schedulingConsole;
+	//this->consoleTable[MEMORY_CONSOLE] = memoryConsole;
 
 	this->switchConsole(MAIN_CONSOLE);
 }
@@ -146,20 +148,20 @@ void ConsoleManager::returnToPreviousConsole()
 void ConsoleManager::exitApplication() 
 {
 	this->running = false;
-	std::cout << "Exiting the application..." << std::end1;
+	std::cout << "Exiting the application..." << std::endl;
 }
 
-void bool isRunning() const 
+bool isRunning()
 {
 	return this->running;
 }
 
-HANDLE getConsoleHandle() const 
+HANDLE getConsoleHandle()
 {
 	return this->consoleHandle
 }
 
-void setCursorPointer(int posX, int posY) const
+void setCursorPointer(int posX, int posY)
 {
 	COORD position;
 	position.X = posX;

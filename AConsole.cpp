@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 AConsole::AConsole(String name) : name(name)
 {
 	//implement smth
