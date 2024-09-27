@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <Windows.h>
 
+#include "ConsoleManager.h"
+
 using namespace std;
 
 //header

@@ -1,4 +1,5 @@
 #include "ConsoleManager.h"
+#include <Windows.h>
 
 #include <iostream>
 
@@ -125,14 +126,43 @@ void ConsoleManager::returnToPreviousConsole()
 {
 	if (this->previousConsole != nullptr)
 	{
-		//empty
+		//from here on out, fill_in_the_blanks code
+		// Clear the screen
+		system("cls");
+
+		// Switch the console
+		this->currentConsole = this->previousConsole;
+		this->previousConsole = nullptr;
+
+		// Enable the previous console
+		this->currentConsole->onEnabled();
+	}
+	else
+	{
+		std::cerr << "No previous console to switch to." << std::endl;
 	}
 }
 
-//void ConsoleManager::exitApplication();
+void ConsoleManager::exitApplication() 
+{
+	this->running = false;
+	std::cout << "Exiting the application..." << std::end1;
+}
 
-//void bool isRunning() const;
+void bool isRunning() const 
+{
+	return this->running;
+}
 
-//HANDLE getConsoleHandle() const;
+HANDLE getConsoleHandle() const 
+{
+	return this->consoleHandle
+}
 
-//void setCursorPointer(int posX, int posY) const;
+void setCursorPointer(int posX, int posY) const
+{
+	COORD position;
+	position.X = posX;
+	position.Y = posY;
+	SetConsoleCursorPosition(this->consoleHandle, position);
+}

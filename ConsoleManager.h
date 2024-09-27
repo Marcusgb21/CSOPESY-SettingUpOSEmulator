@@ -9,9 +9,8 @@
 
 const String MAIN_CONSOLE = "MAIN_CONSOLE";
 const String MARQUEE_CONSOLE = "MARQUEE_CONSOLE";
-const String 
-const String
-const String
+const String SCHEDULING_CONSOLE = "SCHEDULING_CONSOLE";
+const String MEMORY_CONSOLE = "MEMORY_CONSOLE";
 
 class ConsoleManager() 
 {
