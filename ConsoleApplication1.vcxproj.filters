@@ -38,5 +38,8 @@
     <ClInclude Include="BaseScreen.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="testheader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
