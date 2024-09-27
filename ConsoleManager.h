@@ -4,9 +4,11 @@
 #include "AConsole.h"
 #include <unordered_map>
 #include <Windows.h>
-#include "TypedefRepo.h"
 #include "BaseScreen.h"
+#include <string>
 
+
+typedef std::string String;
 const String MAIN_CONSOLE = "MAIN_CONSOLE";
 const String MARQUEE_CONSOLE = "MARQUEE_CONSOLE";
 const String SCHEDULING_CONSOLE = "SCHEDULING_CONSOLE";

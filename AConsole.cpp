@@ -2,4 +2,12 @@
 
 #include <iostream>
 
-//empty
+AConsole::AConsole(String name) : name(name)
+{
+	//implement smth
+}
+
+AConsole::String AConsole::getName()
+{
+	return name;
+}
