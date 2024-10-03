@@ -80,7 +80,7 @@ int main() {
     std::string typ[5] = { "C+G", "C+G", "C+G", "C+G", "C+G" };
     std::string name[5] = { "Pogi", "ni", "sir", "wootwootwootwootwootwootwootwootwoo", "wootwootwootwootwootwootwootwootwootwootwoot.exe" };
     std::string usage[5] = { "N/A", "N/A", "N/A", "N/A", "N/A" };
-    std::cout << "PS C:\\Users\\Ayush> nvidia-smi" << std::endl;
+    std::cout << "PS C:\\Users\\Ayushi> nvidia-smi" << std::endl;
     printBuildDateTime();
     printLayout(pd, typ, name, usage, 5);
 
