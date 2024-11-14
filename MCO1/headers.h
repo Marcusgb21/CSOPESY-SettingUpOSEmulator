@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #ifndef HEADERS_H
 #define HEADERS_H
 #ifdef _MSC_VER
@@ -35,9 +34,12 @@ struct Config {
     int mins;            // Minimum instructions
     int maxins;          // Maximum instructions
     int dpe;             // Delay per execution
+    size_t mom;
+    size_t mpf;
+    size_t mpp;
 
     // Constructor to initialize default values
-    Config() : cpu(0), qCycles(0), bpf(0), mins(0), maxins(0), dpe(0) {}
+    Config() : cpu(0), qCycles(0), bpf(0), mins(0), maxins(0), dpe(0), mom(0), mpf(0), mpp(0) {}
 };
 // Structure for buffer entry
 struct BufferEntry {
@@ -127,7 +129,7 @@ public:
     };
     enum ProcessState { READY, RUNNING, WAITING, FINISHED };
 
-    Process(int pid, std::string name, RequirementFlags reqFlags, int commandCounter);//experiment from READY
+    Process(int pid, std::string name, RequirementFlags reqFlags, int commandCounter, size_t sizeMem);//experiment from READY
     void addCommand(ICommand::CommandType commandType);
     void executeCurrentCommand(int coreID, std::chrono::milliseconds dpe);
     bool isFinished() const;
@@ -165,13 +167,16 @@ public:
     void setCoreID(int coreID) {
         this->coreID = coreID;
     };
+    size_t getSizemem() const {
+        return sizeMem;
+    }
     std::vector<std::shared_ptr<ICommand>> commandList;
 private:
     int pid;
     std::string name;
     int coreID;
     string current_timestamp;
-
+    size_t sizeMem;
     int commandCounter;
     RequirementFlags reqFlags;
     ProcessState state;
@@ -291,6 +296,7 @@ private:
     int cycleInterval;  // Number of cycles between process generation
     std::queue<Screen> readyQueue;
     std::thread schedulerThread;
+    std::mutex queueMutex;
 
     void commandRecognize(std::string command_to_check);
     void commandNotRecognize(std::string command_to_check);
@@ -309,6 +315,7 @@ private:
 
 public:
     void run();
+    void printMemoryInfo();
 };
 
 #endif // HEADERS_H

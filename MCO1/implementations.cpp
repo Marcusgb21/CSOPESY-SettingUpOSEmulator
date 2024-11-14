@@ -212,7 +212,7 @@ bool Screen::screenCommand(vector<string> seperatedCommand, string command_to_ch
 /* PROCESS IMPLEMENTATION */
 
 // Process Constructor
-Process::Process(int pid, std::string name, RequirementFlags reqFlags, int commandCounter)
+Process::Process(int pid, std::string name, RequirementFlags reqFlags, int commandCounter, size_t sizeMem)
     : pid(pid), name(name), reqFlags(reqFlags), commandCounter(0) {}
 
 // Adds the dummy command to a Command List of a Process
@@ -308,8 +308,11 @@ void Scheduler::addProcess(Process& process) {
 
 // Actually starts the scheduler per quantum cycle
 void Scheduler::start(int amtCpu, SchedulerAlgorithm algorithm, std::chrono::milliseconds timeQuantum, std::chrono::milliseconds dpe) {
+    MainConsole main;
     stopScheduler = false;
     schedulerThread = std::thread(&Scheduler::schedulerLoop, this);  // Start scheduler thread
+
+    main.printMemoryInfo();
 
     for (int i = 0; i < amtCpu; ++i) {
         coreThreads.push_back(std::thread(&Scheduler::runCore, this, i, algorithm, timeQuantum, dpe));
@@ -430,7 +433,7 @@ Process Scheduler::getNextProcess() {
         processQueue.pop_front();
         return process;
     }
-    return Process(-1, "", { false, 0, false, 0 }, 0);  // Dummy process if queue is empty TEST
+    return Process(-1, "", { false, 0, false, 0 }, 0, 0);  // Dummy process if queue is empty TEST
 }
 
 // Where scheduler-test is actually stopped
@@ -573,7 +576,7 @@ void MainConsole::initializeScheduler(int mins, int maxins) {
 
         if (cycleCounter >= cycleInterval) {
             string processName = "Process_" + to_string(counter++);
-            Process newProcess(id++, processName, { false, 0, false, 0 }, 0);
+            Process newProcess(id++, processName, { false, 0, false, 0 }, 0, 0);
 
             std::random_device rd;
             std::mt19937 gen(rd());
@@ -699,6 +702,15 @@ bool MainConsole::mainMenuCommand(vector<string> seperatedCommand, string comman
                     else if (key == "delay-per-exec") {
                         iss >> config.dpe; // Assign to config.dpe
                     }
+                    else if (key == "max-overall-mem") {
+                        iss >> config.mom; // Assign to config.dpe
+                    }
+                    else if (key == "mem-per-frame") {
+                        iss >> config.mpf; // Assign to config.dpe
+                    }
+                    else if (key == "mem-per-proc") {
+                        iss >> config.mpp; // Assign to config.dpe
+                    }
                 }
             }
         }
@@ -715,6 +727,9 @@ bool MainConsole::mainMenuCommand(vector<string> seperatedCommand, string comman
         cout << "  Min Instructions: " << config.mins << endl;
         cout << "  Max Instructions: " << config.maxins << endl;
         cout << "  Delay per Execution: " << config.dpe << endl << "\n";
+        cout << "  max-overall-mem: " << config.mom << endl;
+        cout << "  mem-per-frame: " << config.mpf << endl;
+        cout << "  mem-per-proc: " << config.mpp << endl;
 
         std::chrono::milliseconds quantumTime{ config.qCycles };
         std::chrono::milliseconds delayTime{ config.dpe };
@@ -824,7 +839,7 @@ bool MainConsole::mainMenuCommand(vector<string> seperatedCommand, string comman
 
                 std::vector<Process> allProcesses = scheduler.getRunningProcesses();
                 int id = allProcesses.size();
-                Process newProcess(id++, seperatedCommand[2], { false, 0, false, 0 }, 0);
+                Process newProcess(id++, seperatedCommand[2], { false, 0, false, 0 }, 0, 0);
 
                 /* Pang-randomize */
                 std::random_device rd;
@@ -931,4 +946,72 @@ void MainConsole::print_header() {
     P = 14; //color yellow
     SetConsoleTextAttribute(console_color, P);
     write("  Type 'exit' to quit, 'clear' to clear the screen\n", 14);
+}
+
+void MainConsole::printMemoryInfo() {
+    std::lock_guard<std::mutex> lock(queueMutex); // Ensure thread safety when accessing shared data
+
+    std::ofstream outFile("memory_stamp.txt"); // Specify the file name
+    if (!outFile.is_open()) {
+        write("Failed to open file for writing.\n", 14);
+        return; // Exit if the file cannot be opened
+    }
+
+    // Get the total memory from configuration
+    int totalMemory = config.mom; // Total memory from the configuration
+    if (totalMemory <= 0) {
+        outFile << "Total memory is not set correctly.\n"; // Write to file instead of console
+        outFile.close(); // Close the file
+        return; // Exit if total memory is invalid
+    }
+
+    // Get the number of processes in memory
+    const auto& runningProcesses = scheduler.getRunningProcesses();
+    int numProcesses = runningProcesses.size(); // Number of processes in memory
+    int allocatedMemory = 0; // To keep track of allocated memory
+    int totalExternalFragmentationKB = 0; // To be calculated
+
+    // Calculate allocated memory and total external fragmentation
+    for (const auto& process : runningProcesses) {
+        allocatedMemory += process.getSizemem(); // Assuming each process has a method to get its size
+    }
+    totalExternalFragmentationKB = totalMemory - allocatedMemory;
+
+    // Get current time
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm local_tm = *std::localtime(&now_time_t);
+
+    // Create a string stream to format the timestamp
+    std::stringstream timestampStream;
+    timestampStream << std::put_time(&local_tm, "%m/%d/%Y %I:%M:%S %p");
+    std::string currentTimestamp = timestampStream.str();
+
+    // Print the memory information to the file
+    outFile << "Timestamp: (" + currentTimestamp + ")\n";
+    outFile << "Number of processes in memory: " + std::to_string(numProcesses) + "\n";
+    outFile << "Total external fragmentation in KB: " + std::to_string(totalExternalFragmentationKB) + "\n\n";
+    outFile << "------end----- = " + std::to_string(totalMemory) + "\n\n";
+
+    // Print details of each process with memory limits
+    int currentAddress = 0; // Start from address 0
+    for (const auto& process : runningProcesses) {
+        int lowerLimit = currentAddress; // Lower limit for the current process
+        int upperLimit = currentAddress + process.getSizemem(); // Upper limit for the current process
+
+        outFile << totalMemory << "\n"; // Print total memory again for each process
+        outFile << process.getName() << "\n"; // Print process name
+        outFile << process.getSizemem() << "\n"; // Print process size
+
+        // Print memory limits
+        outFile << "Lower Limit: " << lowerLimit << " KB\n"; // Lower limit
+        outFile << "Upper Limit: " << upperLimit << " KB\n\n"; // Upper limit
+
+        currentAddress += process.getSizemem(); // Update current address for the next process
+    }
+
+    // Print external fragmentation
+    outFile << "External Fragmentation: " << totalExternalFragmentationKB << " KB\n";
+
+    outFile.close(); // Close the file after writing
 }
