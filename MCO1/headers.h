@@ -23,6 +23,7 @@ typedef unsigned short WORD;
 #include <queue>
 #include <thread>
 #include <condition_variable>
+#include <unordered_map>
 using namespace std;
 
 class Scheduler;
@@ -35,15 +36,28 @@ struct Config {
     int mins;            // Minimum instructions
     int maxins;          // Maximum instructions
     int dpe;             // Delay per execution
+    size_t mom;
+    size_t mpf;
+    size_t mpp;
+    size_t maxmpp;
+    size_t minmpp;
 
     // Constructor to initialize default values
-    Config() : cpu(0), qCycles(0), bpf(0), mins(0), maxins(0), dpe(0) {}
+    Config() : cpu(0), qCycles(0), bpf(0), mins(0), maxins(0), dpe(0), mom(0), mpf(0), mpp(0), minmpp(0), maxmpp(0) {}
 };
+
 // Structure for buffer entry
 struct BufferEntry {
     std::string text;
     WORD color;
 };
+
+struct AllocationRecord {
+    size_t startBlock; // Starting block index of the allocation
+    size_t size;       // Size of the allocation in bytes or blocks
+    std::string name;  // Name of process that owns the allocation
+};
+
 
 // Base class for screen management
 class AbstractScreen {
@@ -87,7 +101,6 @@ public:
     bool screenCommand(std::vector<std::string> seperatedCommand, std::string command_to_check, Scheduler* scheduler);//CHANGED TO bool from boolean
 };
 
-
 // ICommand base class for commands (Print, IO, etc.)
 class ICommand {
 public:
@@ -103,8 +116,6 @@ protected:
     int pid;
     CommandType commandType;
 };
-
-
 
 // Derived PrintCommand class
 class PrintCommand : public ICommand {
@@ -165,7 +176,15 @@ public:
     void setCoreID(int coreID) {
         this->coreID = coreID;
     };
+    size_t getSizeMem() const {
+        return sizeMem;
+    }
     std::vector<std::shared_ptr<ICommand>> commandList;
+
+    void setSizeMem(size_t sizeOfProc) {
+        sizeMem = sizeOfProc;
+    }
+
 private:
     int pid;
     std::string name;
@@ -186,83 +205,19 @@ public:
     Process getCurrentProcess(string processName);
     void addProcess(Process& process);
     enum class SchedulerAlgorithm { FCFS, RR };
-    void start(int amtCpu, SchedulerAlgorithm schedulerAlgorithm, std::chrono::milliseconds timeQuantum, std::chrono::milliseconds dpe);// Start scheduler and workers
+    void start(int amtCpu, SchedulerAlgorithm schedulerAlgorithm, int timeQuantum, std::chrono::milliseconds dpe);// Start scheduler and workers
     void stop();// Stop scheduler and workers
-
+    size_t generateRandomMemory(size_t minMem, size_t maxMem);
     int amtCpu;
     std::chrono::milliseconds timeQuantum/*{ 3000 }*/;//ORIG: 50
     int bpf;
     int mins;
     int maxins;
     std::chrono::milliseconds dpe;
-
-    std::deque<Process> getAllProcesses() {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        std::deque<Process> allProcesses;
-
-        int totalCores = coreThreads.size();  // Total number of cores
-        int usedCores = runningProcesses.size();  // Active or running processes
-        int availableCores = totalCores - usedCores;
-
-        float fUsed = static_cast <float>(usedCores);
-        float fTotal = static_cast <float>(totalCores);
-
-        // Display cores usage
-        std::cout << std::endl << "  CPU Utilization: " << (fUsed / totalCores) * 100 << "%" << std::endl;
-        std::cout << "  Cores used: " << usedCores << std::endl;
-        std::cout << "  Cores available: " << availableCores << std::endl;
-        std::cout << "  _______________________________________" << std::endl;
-        // Display running processes
-        std::cout << "  Running Processes:" << std::endl;
-        /*for (const auto& process : runningProcesses) {
-            std::cout << "  Name: " << process.getName()
-                << " | " << process.getCurrentTime()
-                << " | Core: " << process.getCoreID()
-                << " | " << process.getCurrentIteration() << " / " << process.commandList.size() << " | " << std::endl;
-        }*/
-
-        std::vector<Process>::iterator i;
-        for (i = runningProcesses.begin(); i != runningProcesses.end(); i++) {
-            std::cout << "  Name: " << i->getName()
-                << " | " << i->getCurrentTime()
-                << " | Core: " << i->getCoreID()
-                << " | " << i->getCurrentIteration() << " / " << i->commandList.size() << " | " << std::endl;
-        }
-
-        if (runningProcesses.empty()) {
-            std::cout << "  No running processes." << std::endl;
-        }
-
-        // Copy finished processes
-        allProcesses.insert(allProcesses.end(), finishedProcesses.begin(), finishedProcesses.end());
-
-        // Display finished processes
-        std::cout << std::endl << "  Finished Processes:" << std::endl;
-        if (finishedProcesses.empty()) {
-            std::cout << "  No finished processes." << std::endl;
-        }
-        else {
-            //CHANGE start
-            std::vector<Process>::iterator it;
-
-            for (it = finishedProcesses.begin(); it != finishedProcesses.end(); it++) {
-                std::cout << "  Name: " << it->getName()
-                    << " | " << it->getCurrentTime()
-                    << " | Finished"
-                    << " | " << it->getCurrentIteration() << " / " << it->commandList.size() << " | " << std::endl;
-            }
-
-            //CHANGE end
-        }
-        std::cout << "  _______________________________________\n" << std::endl;
-
-        return allProcesses;
-    }
-    std::deque<Process> printAllProcesses();
-    std::vector<Process>& getRunningProcesses() { // Add function to retrieve running processes
-        std::lock_guard<std::mutex> lock(queueMutex);
-        return runningProcesses;
-    };
+    deque<Process> getAllProcesses();
+    deque<Process> printAllProcesses();
+    vector<Process>& getRunningProcesses();
+    void printMemory();
 private:
     std::deque<Process> processQueue;
     std::vector<Process> runningProcesses;
@@ -275,7 +230,7 @@ private:
 
     // Worker thread method
     void schedulerLoop();                    // Main scheduler loop
-    void runCore(int coreID, SchedulerAlgorithm algorithm, std::chrono::milliseconds timeQuantum, std::chrono::milliseconds dpe);
+    void runCore(int coreID, SchedulerAlgorithm algorithm, int timeQuantum, std::chrono::milliseconds dpe);
 
 };
 
@@ -297,7 +252,7 @@ private:
     void invalidCommand(std::string command_to_check);
     void screenNotFound();
     void newProcess(int mins, int maxins);
-    void initializeScheduler(int mins, int maxins);
+    void initializeScheduler(int mins, int maxins, int mpp);
     void schedulerTest();
     void checkForStopCommand();
     void stopScheduler();
