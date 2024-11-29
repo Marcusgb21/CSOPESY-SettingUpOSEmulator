@@ -1,0 +1,5 @@
+Process Name: process_38
+Logs: 
+
+(11/29/2024  22:13:14 PM)  Core:11  "Hello world from Process_38!"
+(11/29/2024  22:13:16 PM)  Core:11  "Hello world from Process_38!"

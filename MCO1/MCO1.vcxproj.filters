@@ -23,7 +23,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers.h">
+    <ClInclude Include="Headers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatMemoryAllocator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,13 @@
+Process Name: process_26
+Logs: 
+
+(11/29/2024  22:12:06 PM)  Core:15  "Hello world from Process_26!"
+(11/29/2024  22:12:08 PM)  Core:15  "Hello world from Process_26!"
+(11/29/2024  22:12:13 PM)  Core:15  "Hello world from Process_26!"
+(11/29/2024  22:12:14 PM)  Core:15  "Hello world from Process_26!"
+(11/29/2024  22:12:28 PM)  Core:15  "Hello world from Process_26!"
+(11/29/2024  22:13:02 PM)  Core:9  "Hello world from Process_26!"
+(11/29/2024  22:13:04 PM)  Core:9  "Hello world from Process_26!"
+(11/29/2024  22:13:07 PM)  Core:9  "Hello world from Process_26!"
+(11/29/2024  22:13:14 PM)  Core:9  "Hello world from Process_26!"
+(11/29/2024  22:13:15 PM)  Core:9  "Hello world from Process_26!"

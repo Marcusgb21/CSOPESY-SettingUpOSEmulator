@@ -1,0 +1,7 @@
+Timestamp: (11/15/2024 12:46:14 AM)
+Number of processes in memory: 0
+Total external fragmentation in KB: 16384
+
+------end----- = 16384
+
+External Fragmentation: 16384 KB
