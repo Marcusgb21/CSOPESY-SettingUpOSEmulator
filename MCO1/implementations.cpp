@@ -510,7 +510,7 @@ Process Scheduler::getNextProcess() {
         processQueue.pop_front();
         return process;
     }
-    return Process(-1, "", { false, 0, false, 0 }, 0);  // Dummy process if queue is empty TEST
+    return Process(-1, "", { false, 0, false, 0 }, 0, 0);  // Dummy process if queue is empty TEST
 }
 
 // Where scheduler-test is actually stopped
@@ -1063,7 +1063,7 @@ bool MainConsole::mainMenuCommand(vector<string> seperatedCommand, string comman
 
                 std::vector<Process> allProcesses = scheduler.getRunningProcesses();
                 int id = allProcesses.size();
-                Process newProcess(id++, seperatedCommand[2], { false, 0, false, 0 }, 0);
+                Process newProcess(id++, seperatedCommand[2], { false, 0, false, 0 }, 0, 0);
 
                 /* Pang-randomize */
                 std::random_device rd;
